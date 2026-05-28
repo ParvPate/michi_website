@@ -53,11 +53,28 @@ export default defineNuxtConfig({
     quality: 82,
   },
 
-  experimental: {
-    payloadExtraction: true,
-  },
-
   nitro: {
     compressPublicAssets: true,
+    // Static deploy target — Cloudflare Pages serves `.output/public/`
+    // as pure HTML+JS+CSS. Nitro runs ONLY at build time: it walks the
+    // crawler from `/`, prerenders every linked page, hits the local
+    // `server/api/data/[slug]` endpoints once each, and inlines the
+    // JSON into the page payload. No server ships to CF.
+    prerender: {
+      crawlLinks: true,
+      // Explicit routes belt-and-suspenders for orphan pages the
+      // crawler might miss (no incoming link from /). Update when
+      // adding a new top-level page.
+      routes: [
+        '/',
+        '/contact',
+        '/privacy',
+        '/terms',
+        '/account-deletion',
+      ],
+      // Keep deploys green when a single content page errors mid-edit.
+      // Surfaces as build warnings instead of a hard failure.
+      failOnError: false,
+    },
   },
 })

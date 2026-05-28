@@ -1,0 +1,27 @@
+# Cloudflare Pages headers — per-path MIME + cache directives.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+#
+# share-deeplinks:V5 / V6 — AASA + assetlinks MUST serve as
+# `application/json`. iOS rejects non-JSON MIME (or any redirect).
+# Android is laxer but matches behavior here.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+
+# Long-cache static assets (Nuxt hashes filenames so changes bust the
+# URL automatically). Covers JS chunks, CSS, fonts, IPX-transformed
+# images.
+/_nuxt/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/_ipx/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

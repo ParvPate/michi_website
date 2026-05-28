@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["B9R7693Y8U.com.tarasbaranovskyy.synq"],
+        "components": [
+          { "/": "/e/*", "comment": "share-event deeplink" },
+          { "/": "/u/*", "comment": "share-profile deeplink" }
+        ]
+      }
+    ]
+  }
+}
