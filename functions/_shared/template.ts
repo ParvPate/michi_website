@@ -5,16 +5,23 @@
 // tokens (persimmon + ivory + Geist) so the landing reads as part of
 // the site, not a one-off page.
 //
-// JS deeplink dance:
-//   1. UA mobile-heuristic → set `window.location.href = synq://...`
-//      on DOMContentLoaded. If the OS routes the URL to the installed
-//      app via Universal Link / App Link, the browser never paints
-//      this page (page replaces).
-//   2. 1.5s later, if document.hidden === false (app didn't open),
-//      redirect to the platform store. Catches the "app not installed"
-//      case without flashing the install banner unnecessarily.
-//   3. Desktop / unsupported UA → no JS redirect; render landing
-//      stand-alone with QR code or store badges (T13 follow-up).
+// Strategy: Universal-Links-first, NO JavaScript redirect.
+//   • When the app IS installed, iOS Universal Links / Android App Links
+//     intercept the https://michi.quest/e|u/<id> tap at the OS layer and
+//     open the app directly — this landing page never paints.
+//   • When the app is NOT installed (or the OS missed the UL handoff),
+//     the page paints and offers a manual "Open in app" button + store
+//     links. The iOS Smart App Banner (when IOS_APP_ID is set) covers the
+//     installed-but-UL-missed edge.
+//   • The CTA points at the canonical https self-URL (NOT a `synq://`
+//     custom scheme). Tapping it re-triggers the OS Universal/App Link
+//     handoff when installed, and is a harmless same-page reload when
+//     not — this avoids the browser→app→browser bounce that a raw
+//     `synq://` href produced (custom scheme errors / store-bounces when
+//     the app is absent, and double-handles when present).
+//   • CSP is `script-src 'none'` (see functions/e/[id].ts), so there is
+//     deliberately NO inline JS auto-redirect. Do not add one without a
+//     CSP nonce/hash AND a re-fire guard + store-fallback timeout.
 //
 // OG meta is mandatory for link-unfurl crawlers (Slack / iMessage /
 // WhatsApp / Twitter / Discord). Twitter wants `summary_large_image`
@@ -194,13 +201,12 @@ h1 {
 }
 `;
 
-// Universal-Links-first: NO JS auto-redirect. When the app is installed,
-// iOS/Android intercept the https link at the OS level and this page never
-// paints. When it DOES paint, the app is (almost always) not installed —
-// show the card with a manual "Open in app" button + store links instead
-// of auto-firing `synq://` (which flashed an error / bounced to the store
-// even when the app was installed). The Smart App Banner covers the rare
-// installed-but-UL-missed case.
+// Universal-Links-first: NO JS auto-redirect (see header). The "Open in
+// app" CTA targets the canonical https self-URL so a tap re-triggers the
+// OS Universal/App Link handoff when the app is installed and is a benign
+// reload otherwise — never a `synq://` custom-scheme href (that flashed an
+// error / bounced to the store and caused the redirect loop). The Smart
+// App Banner covers the rare installed-but-UL-missed case.
 
 const render = (i: RenderInput): string => `<!doctype html>
 <html lang="en">
@@ -280,7 +286,9 @@ export const renderEventShareHtml = (data: EventShareData): string => {
   if (data.description) {
     bodyParts.push(`<p class="description">${esc(data.description)}</p>`);
   }
-  bodyParts.push(`<a class="cta" href="${esc(deeplink)}">Open in app</a>`);
+  // CTA targets the https self-URL (Universal/App Link handoff when
+  // installed; benign reload when not), NOT `synq://` — see strategy note.
+  bodyParts.push(`<a class="cta" href="${esc(pageUrl)}">Open in app</a>`);
   bodyParts.push(
     `<div class="foot">Don't have Synq? <a href="${esc(APP_STORE_URL)}">App Store</a> · <a href="${esc(PLAY_STORE_URL)}">Play Store</a></div>`,
   );
@@ -315,7 +323,9 @@ export const renderProfileShareHtml = (data: ProfileShareData): string => {
   if (data.city) {
     bodyParts.push(`<div class="meta">${esc(data.city)}</div>`);
   }
-  bodyParts.push(`<a class="cta" href="${esc(deeplink)}">Open in app</a>`);
+  // CTA targets the https self-URL (Universal/App Link handoff when
+  // installed; benign reload when not), NOT `synq://` — see strategy note.
+  bodyParts.push(`<a class="cta" href="${esc(pageUrl)}">Open in app</a>`);
   bodyParts.push(
     `<div class="foot">Don't have Synq? <a href="${esc(APP_STORE_URL)}">App Store</a> · <a href="${esc(PLAY_STORE_URL)}">Play Store</a></div>`,
   );
@@ -338,5 +348,17 @@ export const renderProfileShareHtml = (data: ProfileShareData): string => {
   });
 };
 
+// Share-id validator. Cheap junk-filter ONLY — hull is the real
+// authority (404s unknown ids). Must accept BOTH id shapes the app mints:
+//   • Event.id  → cuid  (e.g. `clz1a2b3c0000xyz9defghij`) — Prisma
+//     `@default(cuid())`; no hyphens, starts with a letter, base36-ish.
+//   • User.id   → UUID v4 (better-auth) — hyphenated hex.
+// The previous strict UUID_V4 regex 404'd EVERY event share because a
+// cuid never matches it. Keep this permissive: 8–64 chars, alphanumeric
+// plus hyphen. Anything outside that is unambiguous junk.
+export const SHARE_ID = /^[A-Za-z0-9-]{8,64}$/;
+
+// Retained for any external importer / test; SHARE_ID is the gate used
+// by the Pages functions now.
 export const UUID_V4 =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

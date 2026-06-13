@@ -21,7 +21,7 @@
 import {
   type EventShareData,
   renderEventShareHtml,
-  UUID_V4,
+  SHARE_ID,
 } from "../_shared/template";
 
 interface Env {
@@ -30,7 +30,9 @@ interface Env {
 
 export const onRequest: PagesFunction<Env> = async ({ params, env }) => {
   const id = (params.id as string) ?? "";
-  if (!UUID_V4.test(id)) {
+  // Event ids are cuids (Prisma `@default(cuid())`), NOT UUIDs — gate on
+  // the permissive SHARE_ID junk-filter; hull is the real 404 authority.
+  if (!SHARE_ID.test(id)) {
     return new Response(null, { status: 404 });
   }
 

@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "com.synq.app",
       "sha256_cert_fingerprints": [
-        "PLACEHOLDER_REPLACE_WITH_PRODUCTION_RELEASE_SHA256_FINGERPRINT"
+        "TODO_RELEASE_SHA256__from_Play_Console_App_Signing_or_keytool_-list_-v_-keystore_release.keystore__colon_separated_hex_AA:BB:CC..."
       ]
     }
   }

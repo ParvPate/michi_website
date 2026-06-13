@@ -6,7 +6,7 @@
 import {
   type ProfileShareData,
   renderProfileShareHtml,
-  UUID_V4,
+  SHARE_ID,
 } from "../_shared/template";
 
 interface Env {
@@ -15,7 +15,11 @@ interface Env {
 
 export const onRequest: PagesFunction<Env> = async ({ params, env }) => {
   const id = (params.id as string) ?? "";
-  if (!UUID_V4.test(id)) {
+  // User.id is a better-auth UUID today, but gate on the shared
+  // permissive SHARE_ID so both share functions behave identically and
+  // an id-format change can't silently 404 every profile share. hull is
+  // the real 404 authority.
+  if (!SHARE_ID.test(id)) {
     return new Response(null, { status: 404 });
   }
 
