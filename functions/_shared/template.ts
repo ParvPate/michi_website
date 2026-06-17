@@ -70,6 +70,15 @@ export interface ProfileShareData {
   isPrivate: boolean;
 }
 
+export type InviteStatus = "active" | "expired" | "exhausted" | "revoked";
+
+export interface InviteShareData {
+  token: string;
+  ownerName: string;
+  ownerImage: string | null;
+  status: InviteStatus;
+}
+
 interface RenderInput {
   ogTitle: string;
   ogDescription: string;
@@ -347,6 +356,66 @@ export const renderProfileShareHtml = (data: ProfileShareData): string => {
     bodyHtml: bodyParts.join(""),
   });
 };
+
+// Friend-invite landing. The token deep-links to the redeem flow when the
+// app is installed (AASA /i/*); otherwise this OG card paints with an "Add
+// in app" CTA. Non-active tokens render a tombstone (no CTA) so a shared
+// expired/revoked link reads as dead instead of erroring.
+export const renderInviteShareHtml = (data: InviteShareData): string => {
+  const pageUrl = `${SITE_URL}/i/${data.token}`;
+  const deeplink = `synq://invite/${data.token}`;
+  const active = data.status === "active";
+
+  const tombstoneCopy: Record<Exclude<InviteStatus, "active">, string> = {
+    expired: "This invite link has expired.",
+    exhausted: "This invite link has already been used.",
+    revoked: "This invite link was turned off by its owner.",
+  };
+
+  const bodyParts: string[] = [];
+  if (active && data.ownerImage) {
+    bodyParts.push(
+      `<div class="avatar" style="background-image:url('${esc(data.ownerImage)}')"></div>`,
+    );
+  } else {
+    bodyParts.push(`<div class="avatar"></div>`);
+  }
+  bodyParts.push(`<div class="body">`);
+  bodyParts.push(`<div class="kicker">Friend invite on Synq</div>`);
+  if (active) {
+    bodyParts.push(`<h1>${esc(data.ownerName)}</h1>`);
+    bodyParts.push(`<div class="meta">wants to connect on Synq</div>`);
+    // CTA targets the https self-URL (Universal/App Link handoff when
+    // installed; benign reload when not), NOT `synq://` — see strategy note.
+    bodyParts.push(`<a class="cta" href="${esc(pageUrl)}">Add in app</a>`);
+  } else {
+    bodyParts.push(`<h1>Invite unavailable</h1>`);
+    bodyParts.push(
+      `<div class="meta">${esc(tombstoneCopy[data.status])}</div>`,
+    );
+  }
+  bodyParts.push(
+    `<div class="foot">Don't have Synq? <a href="${esc(APP_STORE_URL)}">App Store</a> · <a href="${esc(PLAY_STORE_URL)}">Play Store</a></div>`,
+  );
+  bodyParts.push(`</div>`);
+
+  return render({
+    ogTitle: active ? `${data.ownerName} on Synq` : "Synq invite",
+    ogDescription: active
+      ? `${data.ownerName} invited you to connect on Synq.`
+      : "This Synq invite link is no longer active.",
+    ogImage: active ? data.ownerImage : null,
+    pageUrl,
+    deeplink,
+    iosSmartBanner: deeplink,
+    bodyHtml: bodyParts.join(""),
+  });
+};
+
+// Invite-token validator. Tokens are `randomBytes(16).toString("base64url")`
+// (~22 chars of [A-Za-z0-9_-]) — distinct from SHARE_ID, which excludes the
+// underscore. Cheap junk-filter only; hull is the real authority.
+export const INVITE_TOKEN = /^[A-Za-z0-9_-]{16,64}$/;
 
 // Share-id validator. Cheap junk-filter ONLY — hull is the real
 // authority (404s unknown ids). Must accept BOTH id shapes the app mints:
