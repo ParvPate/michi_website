@@ -1,4 +1,4 @@
-# Synq — Content Ledger
+# Michi — Content Ledger
 
 Every placeholder string on the site lives here so the user can review
 in one place before launch. `{{TOKEN}}` blocks are the things to
@@ -23,7 +23,7 @@ Secondary CTA:  Get it on Android        href="#" (placeholder)
 ## Intro / description (§5A)
 
 ```
-Synq is built for what happens after you put your phone down.
+Michi is built for what happens after you put your phone down.
 
 Find plans near you. Show up. Meet the people who showed up too.
 ```
@@ -46,7 +46,7 @@ inline. The user removes the flag once the source is confirmed.
 ## Features section intro (§6)
 
 ```
-Eyebrow:   WHAT SYNQ DOES
+Eyebrow:   WHAT Michi DOES
 Headline:  Five things, no feed.
 ```
 
@@ -74,7 +74,7 @@ group threads you forget to leave.
 
 05 — KEEP IT SMALL
 Friend lists are capped on purpose.
-Synq limits how many people you can friend, so the app stays about the
+Michi limits how many people you can friend, so the app stays about the
 people you actually see.
 ```
 
@@ -87,7 +87,7 @@ Eyebrow:   THE GALLERY
 
 Headline:  Plans, not posts.
 
-Body:      What people are actually doing on Synq this week.
+Body:      What people are actually doing on Michi this week.
            Tap any moment to see more.
 ```
 
@@ -116,7 +116,7 @@ event names once their gallery imagery lands.
 ## About (§8)
 
 ```
-Eyebrow:   ABOUT SYNQ
+Eyebrow:   ABOUT Michi
 
 Headline:  {{ABOUT_HEADLINE_PLACEHOLDER}}
            default: "Built for what's outside."
@@ -124,10 +124,10 @@ Headline:  {{ABOUT_HEADLINE_PLACEHOLDER}}
 Story:     {{ABOUT_STORY_PLACEHOLDER}}
            default ~120 words:
 
-We started Synq because the apps we used most were the ones we liked
+We started Michi because the apps we used most were the ones we liked
 least. Endless feeds, performative posts, friend counts that meant
 nothing. We wanted the opposite — an app that pushed us off the phone
-and into the room. Synq is small on purpose. It does one thing: it
+and into the room. Michi is small on purpose. It does one thing: it
 helps you find a plan, show up, and meet the people who showed up
 too. That's it. The rest of your life is the point.
 
@@ -158,28 +158,28 @@ build time.
 
 ```
 Q: How do I sign up?
-A: Download Synq from the App Store or Play Store. Create an account
+A: Download Michi from the App Store or Play Store. Create an account
    with your phone number. You're in.
 
-Q: What does Synq cost?
-A: Synq is free. We don't have ads and we don't sell data.
+Q: What does Michi cost?
+A: Michi is free. We don't have ads and we don't sell data.
 
-Q: Where does Synq work?
+Q: Where does Michi work?
 A: We're live in {{CITIES_PLACEHOLDER — VERIFY}}. New cities open every
    month.
 
 Q: Do I need to be 18?
-A: You need to be at least 18 to use Synq.
+A: You need to be at least 18 to use Michi.
 
-Q: What if my friends aren't on Synq?
-A: That's fine. Synq is built for meeting people you don't know yet —
+Q: What if my friends aren't on Michi?
+A: That's fine. Michi is built for meeting people you don't know yet —
    not for hanging out with people you already see.
 ```
 
 ### Tab 2 — Safety
 
 ```
-Q: How does Synq keep things safe?
+Q: How does Michi keep things safe?
 A: Every account is verified by phone number. Hosts can require photo
    ID for any plan. We screen plan content for prohibited activity
    before it goes live.
@@ -210,22 +210,22 @@ A: Only the city you're in. Never your exact location. Plans show a
 ```
 Q: How do I delete my account?
 A: Settings → Account → Delete account. Your data is removed within 30
-   days. You can also email contact@synqtogether.com.
+   days. You can also email contact@Michitogether.com.
 
 Q: How do I change my phone number?
 A: Settings → Account → Change number. You'll verify the new number by
    text.
 
 Q: Why is the friend list capped?
-A: Because Synq is about the people you actually see, not the people
+A: Because Michi is about the people you actually see, not the people
    you've ever met. The cap is currently {{FRIEND_CAP — VERIFY: 50}}.
 
 Q: Can I export my data?
 A: Yes. Settings → Privacy → Request data export. We send a download
    link by email within 7 days.
 
-Q: Will Synq notify me when my friends post?
-A: There are no posts. Synq notifies you about plans, not activity
+Q: Will Michi notify me when my friends post?
+A: There are no posts. Michi notifies you about plans, not activity
    feeds.
 ```
 
@@ -258,7 +258,7 @@ A: Yes. When you create a plan, choose "weekly" or "every other week."
 
 ```
 Tagline:        More life outside.
-Support email:  contact@synqtogether.com  (verify or replace)
+Support email:  contact@Michitogether.com  (verify or replace)
 
 Product:        Features · About · FAQ · Download
 Legal:          Privacy Policy · Terms of Use · Account Deletion
@@ -266,7 +266,7 @@ Help:           Contact · Press
 
 Social:         Instagram · LinkedIn · TikTok    (handles tbd)
 
-Copyright:      © 2026 Synq. All rights reserved.
+Copyright:      © 2026 Michi. All rights reserved.
 ```
 
 ---
@@ -284,7 +284,7 @@ CTA:       Back home → /
 ## Loader (initial paint)
 
 ```
-Wordmark:  Synq
+Wordmark:  Michi
 Status:    {{progress}}%
 ```
 
