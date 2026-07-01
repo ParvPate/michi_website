@@ -4,17 +4,24 @@ interface AboutItem {
   tag: string
   role: 'anchor' | 'satellite'
 }
+
 const { data: items } = await useFetch<AboutItem[]>('/api/data/about-tags', {
   key: 'about-tags',
 })
 
-const anchor = computed(() => items.value?.find(i => i.role === 'anchor'))
-const satellites = computed(() => items.value?.filter(i => i.role === 'satellite') ?? [])
+const members = computed(() => {
+  if (!items.value) return []
+  const anchor = items.value.find(i => i.role === 'anchor')
+  const satellites = items.value.filter(i => i.role === 'satellite')
+  // Put anchor second (CEO in position 2 like the screenshot)
+  return [satellites[0], anchor, satellites[1], satellites[2]].filter(Boolean) as AboutItem[]
+})
 </script>
 
 <template>
   <UiSectionShell id="about" bg="primary">
     <div class="section-about">
+
       <!-- A) Founder note -->
       <header class="section-about__head">
         <UiSectionEyebrow dot>FROM THE FOUNDER</UiSectionEyebrow>
@@ -32,71 +39,35 @@ const satellites = computed(() => items.value?.filter(i => i.role === 'satellite
         </p>
       </header>
 
-      <!-- B) Asymmetric image grid -->
-      <div class="section-about__grid">
-        <!-- Anchor (large, slightly right of center) -->
-        <figure v-if="anchor" class="about-img about-img--anchor">
-          <UiTag class="about-img__tag">{{ anchor.tag }}</UiTag>
-          <span class="about-img__media">
-            <NuxtImg
-              :src="`/about/${anchor.file}`"
-              :alt="anchor.tag"
-              width="1200"
-              height="800"
-              loading="lazy"
-              fit="cover"
-            />
-          </span>
-        </figure>
-
-        <!-- Satellites -->
+      <!-- B) Diagonal strip -->
+      <div class="section-about__strip">
         <figure
-          v-for="(sat, i) in satellites"
-          :key="sat.file"
-          class="about-img"
-          :class="`about-img--sat-${i + 1}`"
+          v-for="(member, i) in members"
+          :key="member.file"
+          class="strip-card"
+          :class="{ 'strip-card--anchor': member.role === 'anchor' }"
         >
-          <UiTag class="about-img__tag">{{ sat.tag }}</UiTag>
-          <span class="about-img__media">
+          <span class="strip-card__media">
             <NuxtImg
-              :src="`/about/${sat.file}`"
-              :alt="sat.tag"
-              width="600"
-              height="600"
+              :src="`/about/${member.file}`"
+              :alt="member.tag"
+              width="400"
+              height="560"
               loading="lazy"
               fit="cover"
             />
           </span>
+          <figcaption class="strip-card__caption">
+            <span class="type-caption strip-card__role">
+              {{ member.tag.split('·').at(0)?.trim() }}
+            </span>
+            <span class="strip-card__name">
+              {{ member.tag.split('·').at(1)?.trim() }}
+            </span>
+          </figcaption>
         </figure>
-
-        <!-- Floating quote — signed by the founder -->
-        <div class="about-quote">
-          <p class="type-display-sm type-italic about-quote__text">
-            &ldquo;I'm building the app I wanted to open myself —
-            then close, and walk out the door.&rdquo;
-          </p>
-          <svg
-            class="about-quote__sig"
-            viewBox="0 0 120 32"
-            aria-hidden="true"
-          >
-            <path
-              d="M4,22 C18,4 30,30 44,12 C58,-2 72,28 86,10 C100,-4 110,18 116,14"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <circle cx="116" cy="14" r="2" fill="currentColor" />
-          </svg>
-          <p class="type-caption about-quote__byline">
-            TARAS BARANOVSKYY · FOUNDER &amp; CEO
-          </p>
-        </div>
-
-        <!-- Pagination indicator (decorative) -->
-        <span class="about-pagination type-caption">01 / —</span>
       </div>
+
     </div>
   </UiSectionShell>
 </template>
@@ -131,150 +102,92 @@ const satellites = computed(() => items.value?.filter(i => i.role === 'satellite
 }
 
 /* ----------------------------------------------------------------
- *  Asymmetric grid
- *  Built with explicit row tracks + grid placement so nothing bleeds.
+ *  Diagonal strip
  * ---------------------------------------------------------------- */
-.section-about__grid {
-  display: grid;
-  position: relative;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: auto;
-  gap: var(--space-6);
-  min-height: 600px;
-}
-
-@media (min-width: 1024px) {
-  .section-about__grid {
-    /* Two image rows + a content-sized row for the founder quote.
-       The quote previously shared row 3 with a fourth satellite image;
-       with three teammates the row shrinks to just the byline so we
-       don't leave a 220px hole on the right. */
-    grid-template-rows: 220px 220px auto;
-    gap: var(--space-12);
-    min-height: 600px;
-  }
-}
-
-.about-img {
-  margin: 0;
+.section-about__strip {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.about-img__tag {
-  padding-left: 2px;
-}
-
-.about-img__media {
-  display: block;
-  width: 100%;
-  height: 100%;
+  align-items: flex-end;
+  gap: 0;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #ECE6D8, #D6CFBE);
-  transition: transform 600ms var(--ease-out-quart);
 }
-.about-img__media :deep(img) {
+
+.section-about__strip {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  overflow: visible;
+  border-radius: 0;
+}
+
+.strip-card {
+  margin: 0;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
+  transition: none;
+}
+
+
+.strip-card__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+.strip-card__media :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top;
+  transition: transform 500ms var(--ease-out-quart);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .about-img:hover .about-img__media {
-    transform: scale(1.015);
-  }
-}
 
-/* Mobile placement (default): each image is full width, stacked */
-.about-img {
-  grid-column: 1 / -1;
-  height: 280px;
-}
-
-/* Desktop placement — asymmetric */
-@media (min-width: 1024px) {
-  .about-img--anchor {
-    grid-column: 4 / 11;
-    grid-row: 1 / 3;
-    height: auto;
-  }
-  .about-img--sat-1 {
-    grid-column: 1 / 4;
-    grid-row: 1 / 2;
-    height: auto;
-  }
-  .about-img--sat-2 {
-    grid-column: 1 / 4;
-    grid-row: 2 / 3;
-    height: auto;
-  }
-  .about-img--sat-3 {
-    grid-column: 11 / 13;
-    grid-row: 2 / 3;
-    height: auto;
-  }
-}
-
-/* Floating quote */
-.about-quote {
+/* Caption sits below the image, outside the clip */
+.strip-card__caption {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  align-self: end;
-}
-@media (max-width: 1023px) {
-  .about-quote {
-    grid-column: 1 / -1;
-    margin-top: var(--space-6);
-  }
-}
-@media (min-width: 1024px) {
-  .about-quote {
-    grid-column: 1 / 5;
-    grid-row: 3 / 4;
-    align-self: start;
-    padding-top: var(--space-8);
-  }
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  padding-inline: var(--space-2);
 }
 
-.about-quote__text {
-  margin: 0;
+.strip-card__role {
+  color: var(--ink-muted);
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+}
+
+.strip-card__name {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
   font-weight: 500;
-  text-wrap: balance;
-  max-width: 26ch;
   color: var(--ink-primary);
-}
-.about-quote__text :first-letter {
-  /* Drops the opening quote mark to a slightly cooler ink so the
-     sentence reads first, the punctuation second. */
-  color: var(--ink-muted);
-}
-.about-quote__sig {
-  width: 80px;
-  height: auto;
-  color: var(--brand);
-  margin-left: 2px;
-}
-.about-quote__byline {
-  margin: 0;
-  margin-top: var(--space-1);
-  color: var(--ink-muted);
-  letter-spacing: 0.08em;
+  line-height: 1.2;
 }
 
-/* Pagination */
-.about-pagination {
-  position: absolute;
-  bottom: -1.5rem;
-  right: 0;
-  color: var(--ink-muted);
+/* Mobile — stack vertically, no diagonal */
+@media (max-width: 767px) {
+  .section-about__strip {
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+  }
+  .strip-card {
+    clip-path: none;
+    margin-inline: 0;
+  }
+  .strip-card__media {
+    aspect-ratio: 4 / 3;
+  }
 }
-@media (min-width: 1024px) {
-  .about-pagination {
-    bottom: var(--space-3);
-    right: var(--space-3);
+
+@media (prefers-reduced-motion: reduce) {
+  .strip-card,
+  .strip-card__media :deep(img) {
+    transition: none;
   }
 }
 </style>

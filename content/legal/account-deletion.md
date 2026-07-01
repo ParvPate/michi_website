@@ -1,14 +1,14 @@
 ---
 title: Account Deletion
-description: How to delete your Synq account and request your data.
+description: How to delete your Michi account and request your data.
 updated: "2026-05-06"
 ---
 
-You can delete your Synq account at any time. Your data is removed within 30 days of the request.
+You can delete your Michi account at any time. Your data is removed within 30 days of the request.
 
 ## In the app
 
-1. Open Synq.
+1. Open Michi.
 2. Settings → Account → Delete account.
 3. Confirm with your phone number.
 
