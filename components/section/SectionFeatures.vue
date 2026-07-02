@@ -39,7 +39,7 @@ const features: Feature[] = [
     number: '01',
     eyebrow: 'OPEN',
     headline: 'See what\'s on tonight, within walking distance.',
-    body: 'Not a feed — a window. What\'s happening near you in the next few hours, posted by people who actually showed up.',
+    body: 'Its not a feed, its a window. What\'s happening near you in the next few hours, posted by people who actually showed up.',
   },
   {
     number: '02',

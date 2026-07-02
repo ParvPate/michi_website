@@ -1,4 +1,4 @@
-# Synq Design System
+# Michi Design System
 
 Exported from `DESIGN_BRIEF.md` after Checkpoint 2 approval. The brief is
 the source of truth; this file mirrors it for component developers who

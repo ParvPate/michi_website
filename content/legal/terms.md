@@ -45,7 +45,7 @@ organizes it, not with Michi.
 
 Michi doesn't claim ownership of your content, you keep it. But to run the
 Service, you give Michi a non-exclusive, royalty-free licence to host, store,
-display, and share your content **only to operate and improve Michi**.For
+display, and share your content **only to operate and improve Michi**. For
 example, showing your event to
 the people you invite, or your message to a chat. This licence ends when you delete
 the content or your account, except for copies we must keep for legal or safety
@@ -159,7 +159,7 @@ prohibits this (including against consumers under the *Consumer Protection Act*)
 
 You can stop using Michi and delete your account any time. We may suspend or end
 your access if you break these Terms, create legal risk, or repeatedly infringe
-others' rights. Sections that should naturally survive; content-licence limits,
+others' rights. Sections that should naturally survive; content-licence limits;
 disclaimers, limitation of liability, indemnification, and governing law, continue
 to apply after termination.
 

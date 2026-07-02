@@ -1,4 +1,4 @@
-# Synq Design Brief
+# Michi Design Brief
 
 **Status:** Checkpoint 2 — awaiting user approval before any component code.
 **Built from:** the master build prompt (§§ 1, 2, 16) plus the audit decisions

@@ -56,6 +56,8 @@ async function onProductClick(e: MouseEvent, item: ProductLink) {
 const legalLinks = [
   { label: 'Privacy Policy', to: '/privacy' },
   { label: 'Terms of Use', to: '/terms' },
+  { label: 'Politique de confidentialité', to: '/privacy-fr' },
+  { label: 'Conditions d\'utilisation', to: '/terms-fr' },
   { label: 'Account Deletion', to: '/account-deletion' },
 ]
 const helpLinks = [

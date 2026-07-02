@@ -101,7 +101,7 @@ We share it only in these situations:
 
 ## 5. How long we keep it
 
-Michi keep personal information only as long as it need it:
+Michi keep personal information only as long as it needs it:
 
 - **Account and profile:** while your account is active. When you delete your
   account, we delete or anonymize your personal information within **30 days**

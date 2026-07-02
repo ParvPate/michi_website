@@ -4,7 +4,7 @@ description: How to delete your Michi account and request your data.
 updated: "2026-05-06"
 ---
 
-You can delete your Michi account at any time. Your data is removed within 30 days of the request.
+You can delete your Michi account at any time.
 
 ## In the app
 
